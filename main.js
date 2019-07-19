@@ -3,15 +3,15 @@ var ctx = canvas.getContext('2d');
 
 autoSetCanvasSize(canvas);
 
-listenToMouse(canvas);
+listenToUser(canvas);
 
-var eaeserEnabled = false;
+var eraserEnabled = false;
 earser.onclick = function(){
-  eaeserEnabled = true;
+  eraserEnabled = true;
   actions.className = "actions x";
 }
 brush.onclick = function(){
-  eaeserEnabled = false;
+  eraserEnabled = false;
   actions.className = "actions";
 }
 
@@ -20,8 +20,8 @@ brush.onclick = function(){
 function autoSetCanvasSize(canvas){
   setCanvasSize();
   window.onresize = function(){
-  setCanvasSize();
-      }
+    setCanvasSize();
+  }
   function setCanvasSize(){
   var pageWidth = document.documentElement.clientWidth;
   var pageHeight = document.documentElement.clientHeight;
@@ -41,49 +41,96 @@ function drewCircle(x,y,radius){
 function drewLine(x1,y1,x2,y2){
   ctx.beginPath();
   ctx.strokeStyle = "black"
-  ctx.moveTo(x1,y2);
+  ctx.moveTo(x1,y1);
   ctx.lineWidth = 5;
   ctx.lineTo(x2,y2);
   ctx.stroke();
   ctx.closePath();
 }
 
-function listenToMouse(canvas){
+function listenToUser(canvas){
   var painting = false;
   var lastPoint = {
   "x":undefined,
   "y":undefined
-   };
-  
-  canvas.onmousedown = function(aaa){
-    var x = aaa.clientX;
-    var y = aaa.clientY;
-    painting = true;
-    if(eaeserEnabled){
-      ctx.clearRect(x-5,y-5,10,10);
-    }else{
-      lastPoint = {"x":x,"y":y};
-      drewCircle(x,y,3);
+  };
+  //特性检测
+  if (document.body.ontouchstart !== undefined) {
+    //触屏手机
+    canvas.ontouchstart = function(aaa){ 
+      var x = aaa.touches[0].clientX;
+      var y = aaa.touches[0].clientY;
+      painting = true;
+      if(eraserEnabled){
+        ctx.clearRect(x-5,y-5,10,10);
+      }else{
+        lastPoint = {
+          "x": x,
+          "y": y
+        };
+      }
     }
-   }
-  
-  canvas.onmousemove = function(aaa){
-    var x = aaa.clientX;
-    var y = aaa.clientY;
-    if(!painting){
-      return
+    canvas.ontouchmove = function(aaa){ 
+      var x = aaa.touches[0].clientX;
+      var y = aaa.touches[0].clientY;
+      if (!painting) {
+        return
+      }
+      if (eraserEnabled) {
+        ctx.clearRect(x - 5, y - 5, 10, 10);
+      } else {
+        var newPoint = {
+          "x": x,
+          "y": y
+        }
+        
+        drewLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+        lastPoint = newPoint;
+      }
     }
-    if(eaeserEnabled){
-         ctx.clearRect(x-5,y-5,10,10);     
-    }else{    
-      var newPoint = {"x":x,"y":y}
-      drewCircle(x,y,3);
-      drewLine(lastPoint.x,lastPoint.y,newPoint.x,newPoint.y);
-      lastPoint = newPoint;
+    canvas.ontouchend = function(){ 
+      painting = false;
     }
- 
-  canvas.onmouseup = function(aaa){
-    painting = false;
+  } else { 
+    //非触屏设备
+    canvas.onmousedown = function(aaa){
+      var x = aaa.clientX;
+      var y = aaa.clientY;
+      painting = true;
+      if(eraserEnabled){
+        ctx.clearRect(x-5,y-5,10,10);
+      }else{
+        lastPoint = {
+          "x": x,
+          "y": y
+        };
+      }
+     }
+    
+    canvas.onmousemove = function (aaa) {
+      var x = aaa.clientX;
+      var y = aaa.clientY;
+      if (!painting) {
+        return
+      }
+      if (eraserEnabled) {
+        ctx.clearRect(x - 5, y - 5, 10, 10);
+      } else {
+        var newPoint = {
+          "x": x,
+          "y": y
+        }
+        
+        drewLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y);
+        lastPoint = newPoint;
+      }
+    }
+    canvas.onmouseup = function(aaa){
+      painting = false;
     }
   }
+  
+  
 }
+
+

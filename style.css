@@ -3,6 +3,7 @@ body{
   }
 #canvas{
     background-color:green;
+    display: block;
   }
 .actions{
     position: fixed;
