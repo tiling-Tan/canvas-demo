@@ -1,20 +1,63 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+var lineWidth = 3;
 
 autoSetCanvasSize(canvas);
 
 listenToUser(canvas);
 
 var eraserEnabled = false;
-earser.onclick = function(){
-  eraserEnabled = true;
-  actions.className = "actions x";
-}
-brush.onclick = function(){
+pen.onclick = function () { 
   eraserEnabled = false;
-  actions.className = "actions";
+  pen.classList.add("active");
+  eraser.classList.remove("active");
+}
+eraser.onclick = function () { 
+  eraserEnabled = true;
+  eraser.classList.add("active");
+  pen.classList.remove("active");
+}
+clear.onclick = function () { 
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+save.onclick = function () { 
+  var url = canvas.toDataURL("image/png");
+  var a = document.createElement('a');
+  document.body.appendChild(a);
+  a.href = url;
+  a.download = "my painting";
+  a.target = '_blank';
+  a.click();
 }
 
+red.onclick = function () { 
+  ctx.strokeStyle = "red";
+  ctx.fillStyle = "red";
+  red.classList.add("active");
+  green.classList.remove("active");
+  blue.classList.remove("active");
+}
+green.onclick = function () { 
+  ctx.strokeStyle = "green";
+  ctx.fillStyle = "green";
+  green.classList.add("active");
+  red.classList.remove("active");
+  blue.classList.remove("active");
+}
+blue.onclick = function () { 
+  ctx.strokeStyle = "blue";
+  ctx.fillStyle = "green";
+  blue.classList.add("active");
+  green.classList.remove("active");
+  red.classList.remove("active");
+}
+
+thin.onclick = function () { 
+  lineWidth = 3;
+}
+thick.onclick = function () { 
+  lineWidth = 6;
+}
 
 /***************/
 function autoSetCanvasSize(canvas){
@@ -34,15 +77,13 @@ function autoSetCanvasSize(canvas){
 function drewCircle(x,y,radius){
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, Math.PI*2);
-  ctx.fillStyle = 'black';
   ctx.fill();
 }
 
 function drewLine(x1,y1,x2,y2){
   ctx.beginPath();
-  ctx.strokeStyle = "black"
   ctx.moveTo(x1,y1);
-  ctx.lineWidth = 5;
+  ctx.lineWidth = lineWidth;
   ctx.lineTo(x2,y2);
   ctx.stroke();
   ctx.closePath();
