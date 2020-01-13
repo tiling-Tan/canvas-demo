@@ -41,7 +41,7 @@ for (let i = 0; i < color.length; i++) {
         $(color[i]).addClass("active").siblings().removeClass("active")
     })
 }
-
+$(color[0]).click()
 
 thin.onclick = function () {
     lineWidth = 3;
