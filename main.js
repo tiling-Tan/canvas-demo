@@ -75,10 +75,11 @@ function drewCircle(x, y, radius) {
 function drewLine(x1, y1, x2, y2) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
-    ctx.lineWidth = lineWidth;
     ctx.lineTo(x2, y2);
-    ctx.stroke();
+    ctx.lineWidth = lineWidth;
     ctx.closePath();
+    ctx.stroke();
+    ctx.fill();
 }
 
 function listenToUser(canvas) {
